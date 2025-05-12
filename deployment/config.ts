@@ -1,6 +1,8 @@
 import * as pulumi from "@pulumi/pulumi";
 
-const infraStack = new pulumi.StackReference(process.env.STACK_NAME || "");
+const infraStack = new pulumi.StackReference(
+  process.env.INFRA_STACK_NAME || ""
+);
 
 const k8sConfig = infraStack.getOutput("k8sConfig").apply((k8s) => `${k8s}`);
 const k8sNamespace = "apps";
