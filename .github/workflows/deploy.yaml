@@ -12,11 +12,11 @@ on:
         description: 'The image tag to deploy'
         type: string
         default: latest
-      update:
+      teardown:
         required: true
-        description: 'Whether to update the deployment or tear it down'
+        description: 'Teardown the deployment?'
         type: boolean
-        default: true
+        default: false
 
 env:
   sub-dir: deployment
@@ -26,7 +26,10 @@ jobs:
     name: Update
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    if: ${{ inputs.update }}
+    if: ${{ !inputs.teardown }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -55,7 +58,10 @@ jobs:
     name: Teardown
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    if: ${{ !inputs.update }}
+    if: ${{ inputs.teardown }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
