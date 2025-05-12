@@ -72,7 +72,8 @@ const serverDeployment = new kubernetes.apps.v1.Deployment(
           containers: [
             {
               name: "server",
-              image: "smehrens/tasky",
+              image: `ghcr.io/smehrens/tasky:${config.k8s.imageTag}`,
+              imagePullPolicy: "Always",
               ports: [
                 {
                   name: "http",

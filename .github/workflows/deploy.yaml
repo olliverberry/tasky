@@ -2,11 +2,22 @@ name: Deploy
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        description: 'The environment to deploy to'
+        type: environment
+      image-tag:
+        required: true
+        description: 'The image tag to deploy'
+        type: string
+        default: latest
 
 jobs:
   update:
     name: Update
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -23,7 +34,12 @@ jobs:
       - uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: dev
+          stack-name: '${{ vars.STACK_NAME }}'
           work-dir: ./deployment
         env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          PULUMI_ACCESS_TOKEN: '${{ secrets.PULUMI_ACCESS_TOKEN }}'
+          STACK_NAME: '${{ vars.STACK_NAME }}'
+          IMAGE_TAG: '${{ inputs.image-tag }}'
+          MONGO_ADMIN_PASSWORD: '${{ secrets.MONGO_ADMIN_PASSWORD }}'
+          SECRET_KEY: '${{ secrets.SECRET_KEY }}'
+
