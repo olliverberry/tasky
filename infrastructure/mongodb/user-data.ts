@@ -50,13 +50,6 @@ chmod +x /opt/mongo-backup.sh
 mkdir -p /var/lib/mongo
 mkdir -p /var/log/mongodb
 
-# create the user
-adduser --system --ingroup mongodb --home /var/lib/mongo --shell /usr/sbin/nologin mongodb
-
-# set the ownership of the directories
-chown -R mongodb:mongodb /var/lib/mongo
-chown -R mongodb:mongodb /var/log/mongodb
-
 # start the mongo db service
 mongod --dbpath ${config.mongoDb.dbDataPath} --logpath ${config.mongoDb.logFilePath} --fork
 

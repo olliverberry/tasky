@@ -17,7 +17,7 @@ const adminSa = new kubernetes.core.v1.ServiceAccount(
   {
     metadata: {
       name: "admin-sa",
-      namespace: config.k8s.namespace,
+      namespace: k8sNamespace.metadata.name,
     },
   },
   { provider }
@@ -38,7 +38,7 @@ const clusterRoleBinding = new kubernetes.rbac.v1.ClusterRoleBinding(
       {
         kind: "ServiceAccount",
         name: adminSa.metadata.name,
-        namespace: config.k8s.namespace,
+        namespace: k8sNamespace.metadata.name,
       },
     ],
   },
@@ -52,7 +52,7 @@ const serverDeployment = new kubernetes.apps.v1.Deployment(
       labels: {
         appClass: "server",
       },
-      namespace: config.k8s.namespace,
+      namespace: k8sNamespace.metadata.name,
     },
     spec: {
       replicas: 2,
@@ -108,7 +108,7 @@ const serverService = new kubernetes.core.v1.Service(
       labels: {
         appClass: "server",
       },
-      namespace: config.k8s.namespace,
+      namespace: k8sNamespace.metadata.name,
     },
     spec: {
       type: "LoadBalancer",

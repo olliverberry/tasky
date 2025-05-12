@@ -92,8 +92,20 @@ const publicK8sSubnet2 = new aws.ec2.Subnet(
   }
 );
 
-const routeTable = new aws.ec2.RouteTable(
-  `${config.resourcePrefix}-route-table`,
+const natEip = new aws.ec2.Eip(`${config.resourcePrefix}-nat-eip`, {
+  domain: "vpc",
+});
+
+const natGateway = new aws.ec2.NatGateway(
+  `${config.resourcePrefix}-nat-gateway`,
+  {
+    subnetId: publicK8sSubnet1.id,
+    allocationId: natEip.id,
+  }
+);
+
+const publicRouteTable = new aws.ec2.RouteTable(
+  `${config.resourcePrefix}-public-route-table`,
   {
     vpcId: vpc.id,
     routes: [
@@ -105,11 +117,24 @@ const routeTable = new aws.ec2.RouteTable(
   }
 );
 
+const privateRouteTable = new aws.ec2.RouteTable(
+  `${config.resourcePrefix}-private-route-table`,
+  {
+    vpcId: vpc.id,
+    routes: [
+      {
+        cidrBlock: "0.0.0.0/0",
+        natGatewayId: natGateway.id,
+      },
+    ],
+  }
+);
+
 const mongoRouteTableAssociation = new aws.ec2.RouteTableAssociation(
   `${config.resourcePrefix}-mongo-route-table-association`,
   {
     subnetId: mongoSubnet.id,
-    routeTableId: routeTable.id,
+    routeTableId: publicRouteTable.id,
   }
 );
 
@@ -118,7 +143,7 @@ const privateKubernetesRouteTableAssociation1 =
     `${config.resourcePrefix}-private-kubernetes-route-table-association-1`,
     {
       subnetId: privateK8sSubnet1.id,
-      routeTableId: routeTable.id,
+      routeTableId: privateRouteTable.id,
     }
   );
 
@@ -127,7 +152,7 @@ const privateKubernetesRouteTableAssociation2 =
     `${config.resourcePrefix}-private-kubernetes-route-table-association-2`,
     {
       subnetId: privateK8sSubnet2.id,
-      routeTableId: routeTable.id,
+      routeTableId: privateRouteTable.id,
     }
   );
 
@@ -136,7 +161,7 @@ const publicKubernetesRouteTableAssociation1 =
     `${config.resourcePrefix}-public-kubernetes-route-table-association-1`,
     {
       subnetId: publicK8sSubnet1.id,
-      routeTableId: routeTable.id,
+      routeTableId: publicRouteTable.id,
     }
   );
 
@@ -145,7 +170,7 @@ const publicKubernetesRouteTableAssociation2 =
     `${config.resourcePrefix}-public-kubernetes-route-table-association-2`,
     {
       subnetId: publicK8sSubnet2.id,
-      routeTableId: routeTable.id,
+      routeTableId: publicRouteTable.id,
     }
   );
 
