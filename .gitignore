@@ -22,3 +22,6 @@ Makefile
 deploy
 test
 tmp
+.vscode/
+mongo_vm
+mongo_vm.pub
