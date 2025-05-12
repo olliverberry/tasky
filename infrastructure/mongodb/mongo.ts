@@ -29,8 +29,6 @@ const keyPair = new aws.ec2.KeyPair(`${config.resourcePrefix}-key-pair`, {
 });
 
 const azs = getAvailableAzs();
-console.log(userData);
-console.log(typeof userData);
 const mongo = new aws.ec2.Instance(`${config.resourcePrefix}-mongo`, {
   instanceType: config.mongoEc2.instanceType,
   subnetId: mongoSubnetId,
