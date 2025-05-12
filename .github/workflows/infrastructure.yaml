@@ -7,11 +7,11 @@ on:
         required: true
         description: 'The environment to deploy to'
         type: environment
-      update:
+      teardown:
         required: true
-        description: 'Whether to update the infrastructure or tear it down'
+        description: 'Teardown the infrastructure?'
         type: boolean
-        default: true
+        default: false
 
 env:
   sub-dir: infrastructure
@@ -21,7 +21,10 @@ jobs:
     name: Update
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    if: ${{ inputs.update }}
+    if: ${{ !inputs.teardown }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -48,7 +51,7 @@ jobs:
     name: Teardown
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
-    if: ${{ !inputs.update }}
+    if: ${{ inputs.teardown }}
     permissions:
       id-token: write
       contents: read
