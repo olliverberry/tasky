@@ -13,6 +13,9 @@ on:
         type: boolean
         default: true
 
+env:
+  sub-dir: infrastructure
+
 jobs:
   update:
     name: Update
@@ -20,15 +23,22 @@ jobs:
     environment: ${{ inputs.environment }}
     if: ${{ inputs.update }}
     steps:
-      - uses: olliverberry/tasky/.github/workflows/setup.yaml@main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          work-dir: infrastructure
-          environment: ${{ inputs.environment }}
+          node-version-file: ${{ env.sub-dir }}/package.json
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      - run: npm install
+        working-directory: ${{ env.sub-dir }}
       - uses: pulumi/actions@v6
         with:
           command: up
           stack-name: ${{ vars.INFRA_STACK_NAME }}
-          work-dir: ./infrastructure
+          work-dir: ${{ env.sub-dir }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           ADMIN_PASSWORD: '${{ secrets.MONGO_ADMIN_PASSWORD }}'
@@ -43,14 +53,21 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: olliverberry/tasky/.github/workflows/setup.yaml@main
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          work-dir: infrastructure
-          environment: ${{ inputs.environment }}
+          node-version-file: ${{ env.sub-dir }}/package.json
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ secrets.AWS_REGION }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+      - run: npm install
+        working-directory: ${{ env.sub-dir }}
       - uses: pulumi/actions@v6
         with:
           command: destroy
           stack-name: ${{ vars.INFRA_STACK_NAME }}
-          work-dir: ./infrastructure
+          work-dir: ${{ env.sub-dir }}
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
