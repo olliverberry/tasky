@@ -18,6 +18,9 @@ jobs:
     name: Update
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
+    permissions:
+      id-token: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,19 +29,18 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-region: ${{ secrets.AWS_REGION }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
       - run: npm install
         working-directory: deployment
       - uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: '${{ vars.STACK_NAME }}'
+          stack-name: '${{ vars.DEPLOYMENT_STACK_NAME }}'
           work-dir: ./deployment
         env:
           PULUMI_ACCESS_TOKEN: '${{ secrets.PULUMI_ACCESS_TOKEN }}'
-          STACK_NAME: '${{ vars.STACK_NAME }}'
+          INFRA_STACK_NAME: '${{ vars.INFRA_STACK_NAME }}'
           IMAGE_TAG: '${{ inputs.image-tag }}'
           MONGO_ADMIN_PASSWORD: '${{ secrets.MONGO_ADMIN_PASSWORD }}'
           SECRET_KEY: '${{ secrets.SECRET_KEY }}'
