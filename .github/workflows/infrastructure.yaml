@@ -1,14 +1,18 @@
 name: Deploy infrastructure
+
 on:
-  push:
-    branches: ['main']
-    paths: ['infrastructure/**']
   workflow_dispatch:
+    inputs:
+      environment:
+        required: true
+        description: 'The environment to deploy to'
+        type: environment
 
 jobs:
   update:
     name: Update
     runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -25,7 +29,9 @@ jobs:
       - uses: pulumi/actions@v6
         with:
           command: up
-          stack-name: dev
+          stack-name: ${{ vars.STACK_NAME }}
           work-dir: ./infrastructure
         env:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
+          ADMIN_PASSWORD: '${{ secrets.ADMIN_PASSWORD }}'
+          PUBLIC_KEY: '${{ secrets.PUBLIC_KEY }}'
