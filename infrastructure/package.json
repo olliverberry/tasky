@@ -1,0 +1,15 @@
+{
+    "name": "infrastructure",
+    "main": "index.ts",
+    "devDependencies": {
+        "@types/node": "^18",
+        "prettier": "3.5.3",
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@pulumi/aws": "^6.0.0",
+        "@pulumi/awsx": "^2.0.2",
+        "@pulumi/eks": "^3.9.1",
+        "@pulumi/pulumi": "^3.113.0"
+    }
+}
