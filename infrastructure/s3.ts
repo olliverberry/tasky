@@ -45,3 +45,5 @@ new aws.s3.BucketPolicy(
   },
   { dependsOn: [publicAccessBlock] }
 );
+
+export const s3Url = pulumi.interpolate`https://${mongoDbBackupBucket.bucket}.s3.amazonaws.com`;
