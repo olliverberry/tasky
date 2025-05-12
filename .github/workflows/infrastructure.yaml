@@ -20,7 +20,7 @@ jobs:
     environment: ${{ inputs.environment }}
     if: ${{ inputs.update }}
     steps:
-      - uses: ./.github/workflows/setup.yaml@main
+      - uses: olliverberry/tasky/.github/workflows/setup.yaml@main
         with:
           work-dir: infrastructure
           environment: ${{ inputs.environment }}
@@ -43,7 +43,7 @@ jobs:
       id-token: write
       contents: read
     steps:
-      - uses: ./.github/workflows/setup.yaml@main
+      - uses: olliverberry/tasky/.github/workflows/setup.yaml@main
         with:
           work-dir: infrastructure
           environment: ${{ inputs.environment }}

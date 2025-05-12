@@ -1,7 +1,7 @@
 name: Setup
 
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       work-dir:
         required: true
@@ -10,7 +10,7 @@ on:
       environment:
         required: true
         description: 'The target aws environment'
-        type: environment
+        type: string
 
 jobs:
   setup:
