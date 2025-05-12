@@ -10,6 +10,7 @@ export const k8s = {
   config: k8sConfig,
   namespace: k8sNamespace,
   imageTag: process.env.IMAGE_TAG || "latest",
+  dockerRegistry: process.env.DOCKER_REGISTRY || "ghcr.io/olliverberry",
 };
 
 const mongoHostName = infraStack
