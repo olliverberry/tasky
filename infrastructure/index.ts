@@ -6,3 +6,4 @@ export const mongoIp = mongo.publicIp;
 export const mongoHostName = mongo.publicDns;
 export const mongoBaseUrl = pulumi.interpolate`http://${mongo.publicDns}`;
 export const k8sConfig = eksCluster.kubeconfigJson;
+export const k8sClusterName = eksCluster.eksCluster.name;

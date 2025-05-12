@@ -13,6 +13,13 @@ const cluster = new eks.Cluster(`${config.resourcePrefix}-cluster`, {
     maxSize: 2,
     minSize: 1,
   },
+  enabledClusterLogTypes: [
+    "api",
+    "audit",
+    "authenticator",
+    "controllerManager",
+    "scheduler",
+  ],
 });
 
 export const eksCluster = cluster;
