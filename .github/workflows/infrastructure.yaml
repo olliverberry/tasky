@@ -15,7 +15,7 @@ jobs:
   update:
     name: Update
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}s
+    environment: ${{ inputs.environment }}
     permissions:
       id-token: write
       contents: read
