@@ -1,6 +1,6 @@
 import * as eks from "@pulumi/eks";
-import * as network from "./network";
-import * as config from "./config";
+import * as network from "../network";
+import * as config from "../config";
 
 const cluster = new eks.Cluster(`${config.resourcePrefix}-cluster`, {
   name: `${config.resourcePrefix}-cluster`,
