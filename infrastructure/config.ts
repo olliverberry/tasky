@@ -51,6 +51,11 @@ export const vpc = {
 
 export const kubernetes = {
   instanceType: defaultConfig.get("kubernetesInstanceType") || "t3.medium",
+  apps: {
+    server: {
+      namespace: defaultConfig.get("kubernetesServerNamespace") || "apps",
+    },
+  },
 };
 
 export const resourcePrefix =

@@ -7,11 +7,6 @@ on:
         required: true
         description: 'The environment to deploy to'
         type: environment
-      teardown:
-        required: true
-        description: 'Teardown the infrastructure?'
-        type: boolean
-        default: false
 
 env:
   sub-dir: infrastructure
@@ -20,8 +15,7 @@ jobs:
   update:
     name: Update
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    if: ${{ !inputs.teardown }}
+    environment: ${{ inputs.environment }}s
     permissions:
       id-token: write
       contents: read
@@ -46,31 +40,3 @@ jobs:
           PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
           ADMIN_PASSWORD: '${{ secrets.MONGO_ADMIN_PASSWORD }}'
           PUBLIC_KEY: '${{ secrets.PUBLIC_KEY }}'
-
-  teardown:
-    name: Teardown
-    runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
-    if: ${{ inputs.teardown }}
-    permissions:
-      id-token: write
-      contents: read
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: ${{ env.sub-dir }}/package.json
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-region: ${{ secrets.AWS_REGION }}
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
-      - run: npm install
-        working-directory: ${{ env.sub-dir }}
-      - uses: pulumi/actions@v6
-        with:
-          command: destroy
-          stack-name: ${{ vars.INFRA_STACK_NAME }}
-          work-dir: ${{ env.sub-dir }}
-        env:
-          PULUMI_ACCESS_TOKEN: ${{ secrets.PULUMI_ACCESS_TOKEN }}
