@@ -1,5 +1,5 @@
 import * as aws from "@pulumi/aws";
-import * as config from "./config";
+import * as config from "../configuration/config";
 
 const mongoEc2Policy: aws.iam.PolicyDocument = {
   Version: "2012-10-17",

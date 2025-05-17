@@ -1,5 +1,5 @@
 import * as kubernetes from "@pulumi/kubernetes";
-import * as config from "../../config";
+import * as config from "../../configuration/config";
 import { eksCluster } from "../eks";
 
 const k8sNamespace = new kubernetes.core.v1.Namespace(

@@ -1,13 +1,13 @@
 import * as aws from "@pulumi/aws";
-import * as config from "../config";
+import * as config from "../configuration/config";
 import { userData } from "./user-data";
 import {
   mongoSecGroupIngressId,
   mongoSubnetId,
   outBoundSecGroupId,
   sshSecGroupId,
-} from "../network";
-import { mongoEc2InstanceProfileName } from "../iam";
+} from "../networking/network";
+import { mongoEc2InstanceProfileName } from "./iam";
 import { getAvailableAzs } from "../utils/availability-zones";
 
 const ami = aws.ec2

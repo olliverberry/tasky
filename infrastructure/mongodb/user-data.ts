@@ -1,4 +1,4 @@
-import * as config from "../config";
+import * as config from "../configuration/config";
 
 export const userData = `#!/bin/bash
 

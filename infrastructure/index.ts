@@ -1,6 +1,6 @@
 import { mongo } from "./mongodb/mongo";
 import { eksCluster } from "./k8s/eks";
-import * as s3 from "./s3";
+import * as s3 from "./s3/s3";
 import * as k8s from "./k8s/apps/server";
 
 export const mongoPublicDns = mongo.publicDns;

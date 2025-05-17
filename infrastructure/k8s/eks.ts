@@ -1,6 +1,6 @@
 import * as eks from "@pulumi/eks";
-import * as network from "../network";
-import * as config from "../config";
+import * as network from "../networking/network";
+import * as config from "../configuration/config";
 
 const cluster = new eks.Cluster(`${config.resourcePrefix}-cluster`, {
   name: `${config.resourcePrefix}-cluster`,
@@ -12,6 +12,7 @@ const cluster = new eks.Cluster(`${config.resourcePrefix}-cluster`, {
     extraNodeSecurityGroups: [network.kubernetsSecGroup],
     maxSize: 2,
     minSize: 1,
+    nodeAssociatePublicIpAddress: false,
   },
   enabledClusterLogTypes: [
     "api",
