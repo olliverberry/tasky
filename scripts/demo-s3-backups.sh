@@ -2,6 +2,12 @@
 
 STACK_NAME=${1}
 
+_usage() {
+    echo "Usage: $0 <stack-name> <aws-profile> <aws-region>"
+    exit 1
+}
+
+
 S3_BUCKET_URL=$(pulumi stack -s ${STACK_NAME} output s3Url)
 
 echo "S3_BUCKET_URL: ${S3_BUCKET_URL}"

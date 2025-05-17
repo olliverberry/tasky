@@ -1,6 +1,6 @@
 import * as aws from "@pulumi/aws";
-import * as config from "./config";
-import { getAvailableAzs } from "./utils/availability-zones";
+import * as config from "../configuration/config";
+import { getAvailableAzs } from "../utils/availability-zones";
 
 const vpc = new aws.ec2.Vpc(`${config.resourcePrefix}-vpc`, {
   cidrBlock: config.vpc.networkCidr,

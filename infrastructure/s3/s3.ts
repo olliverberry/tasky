@@ -1,5 +1,5 @@
 import * as aws from "@pulumi/aws";
-import * as config from "./config";
+import * as config from "../configuration/config";
 import * as pulumi from "@pulumi/pulumi";
 
 const mongoDbBackupBucket = new aws.s3.Bucket(

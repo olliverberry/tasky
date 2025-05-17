@@ -51,6 +51,11 @@ export const vpc = {
 
 export const kubernetes = {
   instanceType: defaultConfig.get("kubernetesInstanceType") || "t3.medium",
+  adminRoleArn:
+    defaultConfig.get("adminRoleArn") || process.env.AWS_ADMIN_ROLE_ARN,
+  adminPolicyArn:
+    defaultConfig.get("adminPolicyArn") ||
+    "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy",
   apps: {
     server: {
       namespace: defaultConfig.get("kubernetesServerNamespace") || "apps",

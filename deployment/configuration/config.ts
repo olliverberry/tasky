@@ -11,6 +11,7 @@ export const k8s = {
   adminSa: infraStack.getOutput("appAdminSa"),
   imageTag: process.env.IMAGE_TAG || "latest",
   dockerRegistry: process.env.DOCKER_REGISTRY || "ghcr.io/olliverberry",
+  imageName: process.env.IMAGE_NAME || "tasky",
 };
 
 const mongoPublicDns = infraStack
