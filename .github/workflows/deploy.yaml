@@ -56,6 +56,7 @@ jobs:
           command: up
           stack-name: '${{ vars.DEPLOYMENT_STACK_NAME }}'
           work-dir: ${{ env.sub-dir }}
+          suppress-outputs: true
         env:
           PULUMI_ACCESS_TOKEN: '${{ secrets.PULUMI_ACCESS_TOKEN }}'
           INFRA_STACK_NAME: '${{ vars.INFRA_STACK_NAME }}'
