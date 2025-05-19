@@ -69,3 +69,7 @@ export const resourcePrefix =
 export const s3 = {
   bucketName: defaultConfig.get("s3BucketName") || `${resourcePrefix}-backup`,
 };
+
+export const aws = {
+  region: process.env.AWS_REGION,
+};
