@@ -10,4 +10,6 @@ new aws.secretsmanager.SecretVersion("mongoAdminPasswordSecretVersion", {
   secretString: config.mongoDb.adminPassword,
 });
 
-export const mongoAdminPasswordId = mongoAdminPassword.id;
+export const mongoAdminPasswordId = mongoAdminPassword.id.apply(
+  (id) => `${id}`
+);
