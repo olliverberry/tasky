@@ -1,6 +1,8 @@
 import * as config from "../configuration/config";
 import { mongoAdminPasswordId } from "./secret";
 
+const awsRegion = config.aws.region;
+const awsMongoAdminPasswordId = mongoAdminPasswordId;
 export const userData = `#!/bin/bash
 
 # install dependencies
@@ -33,7 +35,7 @@ BACKUP_DIR="/tmp/mongo-backup-\$TIMESTAMP"
 ARCHIVE_FILE="/tmp/mongo-backup-\$TIMESTAMP.tar.gz"
 S3_BUCKET="${config.s3.bucketName}"
 S3_KEY="backups/mongo-\$TIMESTAMP.tar.gz"
-ADMIN_PASSWORD=\$(aws secretsmanager get-secret-value --secret-id ${mongoAdminPasswordId} --query SecretString --output text)
+ADMIN_PASSWORD=\$(aws secretsmanager get-secret-value --secret-id ${awsMongoAdminPasswordId} --query SecretString --output text --region ${awsRegion})
 
 mkdir -p "\$BACKUP_DIR"
 mongodump --uri="mongodb://${config.mongoDb.adminUser}:\$ADMIN_PASSWORD@localhost:27017/?authSource=admin" --out="\$BACKUP_DIR"

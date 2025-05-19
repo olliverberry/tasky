@@ -46,3 +46,4 @@ jobs:
           ADMIN_PASSWORD: '${{ secrets.MONGO_ADMIN_PASSWORD }}'
           PUBLIC_KEY: '${{ secrets.PUBLIC_KEY }}'
           AWS_ADMIN_ROLE_ARN: '${{ secrets.AWS_ADMIN_ROLE_ARN }}'
+          AWS_REGION: '${{ secrets.AWS_REGION }}'
