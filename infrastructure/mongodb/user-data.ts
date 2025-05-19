@@ -1,9 +1,10 @@
+import * as pulumi from "@pulumi/pulumi";
 import * as config from "../configuration/config";
 import { mongoAdminPasswordId } from "./secret";
 
 const awsRegion = config.aws.region;
 const awsMongoAdminPasswordId = mongoAdminPasswordId;
-export const userData = `#!/bin/bash
+export const userData = pulumi.interpolate`#!/bin/bash
 
 # install dependencies
 apt-get update -y
