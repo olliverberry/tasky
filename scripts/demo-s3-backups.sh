@@ -8,6 +8,8 @@ usage() {
 }
 
 if [ -z "${STACK_NAME}" ]; then
+    echo "No stack name provided. Listing all stacks:"
+    pulumi stack ls -a --json | jq -r '.[].name'
     usage
 fi
 
