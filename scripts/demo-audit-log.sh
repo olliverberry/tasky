@@ -11,6 +11,8 @@ usage() {
 }
 
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
+    echo "Listing all stacks:"
+    pulumi stack ls -a --json | jq -r '.[].name'
     usage
 fi
 
@@ -40,4 +42,4 @@ aws logs filter-log-events \
     --profile "$AWS_PROFILE" \
     --region "$AWS_REGION" \
     --filter-pattern '{ ($.responseStatus.code = 401) && ($.requestURI = "/api") }' \
-    | jq
+    | jq -r '.events[] | .message' | jq
