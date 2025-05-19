@@ -5,13 +5,13 @@ AWS_PROFILE=${2}
 AWS_REGION=${3}
 LOG_GROUP_NAME="/aws/eks/wiz-challenge-cluster/cluster"
 
-_usage() {
+usage() {
     echo "Usage: $0 <stack-name> <aws-profile> <aws-region>"
     exit 1
 }
 
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-    _usage
+    usage
 fi
 
 API_SERVER_URL=$(pulumi stack -s $STACK_NAME output apiServerUrl)
