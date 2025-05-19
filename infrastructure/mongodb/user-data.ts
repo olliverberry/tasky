@@ -1,5 +1,5 @@
-import { mongoAdminPasswordId } from "..";
 import * as config from "../configuration/config";
+import { mongoAdminPasswordId } from "./secret";
 
 export const userData = `#!/bin/bash
 
