@@ -51,3 +51,15 @@ echo "$RES" | xmllint --format - 2>/dev/null || {
     fail "Failed to parse S3 XML response. Is xmllint installed?"
     echo "$RES"
 }
+
+echo -e "\nEnter the full key of the file you want to download:"
+read -r SELECTED_KEY
+
+if [[ -z "$SELECTED_KEY" ]]; then
+    fail "No key entered. Aborting download."
+    exit 1
+fi
+
+DOWNLOAD_URL="${S3_BUCKET_URL}/${SELECTED_KEY}"
+section "Downloading: $SELECTED_KEY"
+curl -O "$DOWNLOAD_URL" && success "File downloaded successfully: $SELECTED_KEY" || fail "Download failed"

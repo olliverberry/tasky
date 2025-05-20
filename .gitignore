@@ -27,3 +27,4 @@ mongo_vm
 mongo_vm.pub
 **/kubeconfig.yaml
 threat-ips.txt
+**/*.tar.gz
