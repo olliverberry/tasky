@@ -3,22 +3,52 @@
 STACK_NAME=${1}
 
 usage() {
-    echo "Usage: $0 <stack-name>"
+    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name>$(tput sgr0)"
     exit 1
 }
 
+section() {
+    echo -e "\n$(tput setaf 6)[INFO] $1$(tput sgr0)"
+}
+
+success() {
+    echo -e "$(tput setaf 2)✔️ $1$(tput sgr0)"
+}
+
+fail() {
+    echo -e "$(tput setaf 1)❌ $1$(tput sgr0)"
+}
+
 if [ -z "${STACK_NAME}" ]; then
-    echo "No stack name provided. Listing all stacks:"
+    section "No stack name provided. Listing available stacks:"
     pulumi stack ls -a --json | jq -r '.[].name'
     usage
 fi
 
-MONGO_PUBLIC_DNS=$(pulumi stack -s ${STACK_NAME} output mongoPublicDns)
+section "Fetching MongoDB Public DNS from Pulumi stack: ${STACK_NAME}"
+MONGO_PUBLIC_DNS=$(pulumi stack -s "${STACK_NAME}" output mongoPublicDns)
 
-echo "Mongo Public DNS: ${MONGO_PUBLIC_DNS}"
+if [ -z "$MONGO_PUBLIC_DNS" ]; then
+    fail "Failed to retrieve mongoPublicDns from Pulumi stack."
+    exit 1
+fi
 
-echo "Checking SSH connectivity to MongoDB on port 22. This should succeed due to Security Group rules."
-nc -z -v -G 10 ${MONGO_PUBLIC_DNS} 22
+echo "$(tput setaf 2)Mongo Public DNS: $MONGO_PUBLIC_DNS$(tput sgr0)"
 
-echo "Checking MongoDB connectivity on port 27017. This should fail due to Security Group rules."
-nc -z -v -G 10 ${MONGO_PUBLIC_DNS} 27017
+# SSH check (port 22)
+section "Checking SSH connectivity to MongoDB (should succeed)"
+nc -z -v -G 10 "${MONGO_PUBLIC_DNS}" 22 &>/dev/null
+if [ $? -eq 0 ]; then
+    success "Port 22 (SSH) is open - connectivity successful."
+else
+    fail "Port 22 (SSH) is not reachable -expected to be open."
+fi
+
+# Mongo check (port 27017)
+section "Checking MongoDB connectivity (should fail)"
+nc -z -v -G 10 "${MONGO_PUBLIC_DNS}" 27017 &>/dev/null
+if [ $? -ne 0 ]; then
+    success "Port 27017 (MongoDB) is closed - expected behavior."
+else
+    fail "Port 27017 (MongoDB) is open - this may be a misconfiguration."
+fi

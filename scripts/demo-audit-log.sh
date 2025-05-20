@@ -6,26 +6,44 @@ AWS_REGION=${3}
 LOG_GROUP_NAME="/aws/eks/wiz-challenge-cluster/cluster"
 
 usage() {
-    echo "Usage: $0 <stack-name> <aws-profile> <aws-region>"
+    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name> <aws-profile> <aws-region>$(tput sgr0)"
     exit 1
 }
 
+section() {
+    echo -e "\n$(tput setaf 6)[INFO] $1$(tput sgr0)"
+}
+
+error() {
+    echo -e "$(tput setaf 1)[ERROR] $1$(tput sgr0)"
+}
+
 if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
-    echo "Listing all stacks:"
+    section "Listing available Pulumi stacks:"
     pulumi stack ls -a --json | jq -r '.[].name'
     usage
 fi
 
-API_SERVER_URL=$(pulumi stack -s $STACK_NAME output apiServerUrl)
+section "Getting API server URL from Pulumi stack: $STACK_NAME"
+API_SERVER_URL=$(pulumi stack -s "$STACK_NAME" output apiServerUrl)
 
-echo "API_SERVER_URL: $API_SERVER_URL"
+if [ -z "$API_SERVER_URL" ]; then
+    error "Failed to retrieve API server URL from Pulumi stack."
+    exit 1
+fi
 
-# make a few requests to the API server triggering 401 responses
-for i in {1..10}; do
-    curl -k -sq $API_SERVER_URL/api | jq
+echo "$(tput setaf 2)API_SERVER_URL: $API_SERVER_URL$(tput sgr0)"
+
+START_TIME=$(date +%s000)
+section "Sending unauthenticated requests to $API_SERVER_URL/api"
+for i in {1..5}; do
+    printf "Request #%d: " "$i"
+    curl -k -sq "$API_SERVER_URL/api" | jq -c '.' || echo "No response"
     sleep 1
 done
+END_TIME=$(date +%s000)
 
+section "Fetching latest audit log stream from CloudWatch"
 LOG_STREAM_NAME=$(aws logs describe-log-streams \
     --log-group-name "$LOG_GROUP_NAME" \
     --order-by "LastEventTime" \
@@ -34,12 +52,21 @@ LOG_STREAM_NAME=$(aws logs describe-log-streams \
     --region "$AWS_REGION" \
     | jq -r '[.logStreams[] | select(.logStreamName | contains("audit"))][0].logStreamName')
 
-echo "LOG_STREAM_NAME: $LOG_STREAM_NAME"
+if [ -z "$LOG_STREAM_NAME" ]; then
+    error "Could not find an audit log stream."
+    exit 1
+fi
 
+echo "$(tput setaf 2)LOG_STREAM_NAME: $LOG_STREAM_NAME$(tput sgr0)"
+
+section "Filtering CloudWatch logs for 401 responses to /api"
+sleep 5
 aws logs filter-log-events \
     --log-stream-names "$LOG_STREAM_NAME" \
     --log-group-name "$LOG_GROUP_NAME" \
     --profile "$AWS_PROFILE" \
     --region "$AWS_REGION" \
+    --start-time "$START_TIME" \
+    --end-time "$END_TIME" \
     --filter-pattern '{ ($.responseStatus.code = 401) && ($.requestURI = "/api") }' \
     | jq -r '.events[] | .message' | jq
