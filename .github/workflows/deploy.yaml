@@ -1,4 +1,4 @@
-name: Deploy to app AWS
+name: Deploy app to AWS
 
 on:
   workflow_dispatch:
