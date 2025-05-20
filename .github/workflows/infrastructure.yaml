@@ -1,4 +1,4 @@
-name: Deploy infrastructure
+name: Deploy infrastructure to AWS
 
 on:
   workflow_dispatch:
@@ -13,7 +13,7 @@ env:
 
 jobs:
   update:
-    name: Update
+    name: Create or update infrastructure
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
     permissions:
