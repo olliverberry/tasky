@@ -9,19 +9,7 @@ import {
 } from "../networking/network";
 import { mongoEc2InstanceProfileName } from "./iam";
 import { getAvailableAzs } from "../utils/availability-zones";
-
-const ami = aws.ec2
-  .getAmi({
-    filters: [
-      {
-        name: "image-id",
-        values: [config.mongoEc2.amiId],
-      },
-    ],
-    owners: ["amazon"],
-    mostRecent: true,
-  })
-  .then((invoke) => invoke.id);
+import { mongoGoldenAmi } from "../amis/ami";
 
 const keyPair = new aws.ec2.KeyPair(`${config.resourcePrefix}-key-pair`, {
   keyName: `${config.resourcePrefix}-key-pair`,
@@ -40,7 +28,7 @@ const mongo = new aws.ec2.Instance(`${config.resourcePrefix}-mongo`, {
   keyName: keyPair.keyName,
   userData: userData,
   userDataReplaceOnChange: true,
-  ami: ami,
+  ami: mongoGoldenAmi.id,
   tags: {
     Name: `${config.resourcePrefix}-mongo`,
   },

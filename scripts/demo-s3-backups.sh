@@ -2,22 +2,52 @@
 
 STACK_NAME=${1}
 
+# Output formatting
+section() {
+    echo -e "\n$(tput setaf 6)[INFO] $1$(tput sgr0)"
+}
+
+success() {
+    echo -e "$(tput setaf 2)✔️ $1$(tput sgr0)"
+}
+
+fail() {
+    echo -e "$(tput setaf 1)❌ $1$(tput sgr0)"
+}
+
 usage() {
-    echo "Usage: $0 <stack-name>"
+    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name>$(tput sgr0)"
     exit 1
 }
 
-if [ -z "${STACK_NAME}" ]; then
-    echo "No stack name provided. Listing all stacks:"
+# Input validation
+if [ -z "$STACK_NAME" ]; then
+    section "No stack name provided. Listing available Pulumi stacks:"
     pulumi stack ls -a --json | jq -r '.[].name'
     usage
 fi
 
-S3_BUCKET_URL=$(pulumi stack -s ${STACK_NAME} output s3Url)
+# Fetch S3 bucket URL from Pulumi stack
+section "Fetching s3Url from Pulumi stack: $STACK_NAME"
+S3_BUCKET_URL=$(pulumi stack -s "$STACK_NAME" output s3Url)
 
-echo "S3_BUCKET_URL: ${S3_BUCKET_URL}"
-echo "Listing contents of the bucket:"
+if [ -z "$S3_BUCKET_URL" ]; then
+    fail "Could not retrieve s3Url from stack: $STACK_NAME"
+    exit 1
+fi
 
-# list the contents of the bucket
+success "Retrieved S3 bucket URL: $S3_BUCKET_URL"
+
+# List S3 contents
+section "Listing contents of the S3 bucket"
 RES=$(curl -s "$S3_BUCKET_URL")
-echo "$RES" | xmllint --format -
+
+if [ -z "$RES" ]; then
+    fail "Failed to retrieve or empty response from: $S3_BUCKET_URL"
+    exit 1
+fi
+
+echo "$RES" | xmllint --format - 2>/dev/null || {
+    fail "Failed to parse S3 XML response. Is xmllint installed?"
+    echo "$RES"
+}
