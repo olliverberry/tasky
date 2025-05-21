@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Inputs
+# 1. Cluster name -- the name of the EKS cluster to use
+# 2. Profile -- the AWS profile to use
+# 3. Region -- the AWS region to use
+# this script will execute the 'kube-proxy -h' command 20 times inside the kube-proxy pod
 CLUSTER_NAME=${1}
 PROFILE=${2}
 REGION=${3}

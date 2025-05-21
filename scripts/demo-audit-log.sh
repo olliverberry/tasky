@@ -7,6 +7,7 @@
 # 4. API server URL -- the URL of the API server to use. If not provided, the API server URL will be retrieved from the stack
 # if stack name is not provided, all available stacks will be listed.
 # you can set the stack name to "default" which will not use the specific stack but then the API server URL is required
+# this script will send unauthenticated requests to the API server and then filter the CloudWatch logs for 401 responses to /api
 
 STACK_NAME=${1}
 AWS_PROFILE=${2}
