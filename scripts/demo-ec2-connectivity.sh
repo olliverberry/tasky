@@ -6,6 +6,9 @@
 # if stack name is not provided, list all available stacks.
 # if mongo public DNS is not provided, get it from the stack. 
 # you can set the stack name to "default" which will not use the specific stack but then the mongo public DNS is required
+# this script will check the connectivity to the MongoDB instance
+# it will check the SSH connectivity and then the MongoDB connectivity
+
 STACK_NAME=${1}
 MONGO_PUBLIC_DNS=${2}
 

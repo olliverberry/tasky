@@ -1,6 +1,19 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Inputs
+# 1. Region -- the AWS region to use
+# 2. Profile -- the AWS profile to use
+# 3. Security group ID -- the ID of the security group to use
+# 4. Subnet ID -- the ID of the subnet to use
+# 5. Unapproved AMI ID -- the ID of the unapproved AMI to use
+# 6. Instance type -- the type of instance to use
+# 7. Key name -- the name of the key pair to use
+# 8. Approved AMI ID -- the ID of the approved AMI to use
+# if any of these are not provided, the script will use the default values
+# this script will attempt to launch an EC2 instance with the unapproved AMI and then the approved AMI
+# it will then check the status of the approved instance and terminate it
+
 # Inputs with defaults
 REGION=${1:-us-east-1}
 PROFILE=${2:-wiz-demo-user}

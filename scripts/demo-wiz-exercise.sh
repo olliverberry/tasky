@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Inputs
+# 1. Image name -- the name of the Docker image to use
+# this script will run the docker image and inspect the contents of the /app directory
+# and the wizexercise.txt file
+
 IMAGE_NAME=${1}
 
 # Output formatting

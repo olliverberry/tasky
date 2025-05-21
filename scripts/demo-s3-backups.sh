@@ -2,8 +2,10 @@
 
 # Inputs
 # 1. Stack name -- the name of the Pulumi stack to use
+# 2. S3 bucket URL -- the URL of the S3 bucket to use
 # if stack name is not provided, list all available stacks.
 # you can set the stack name to "default" which will not use the specific stack but then the s3 bucket URL is required
+# this script will list the contents of the S3 bucket and allow you to download a file from the bucket
 
 STACK_NAME=${1}
 S3_BUCKET_URL=${2}
