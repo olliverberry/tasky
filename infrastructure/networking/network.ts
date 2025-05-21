@@ -221,7 +221,7 @@ const mongoSecGroupIngress = new aws.ec2.SecurityGroup(
     vpcId: vpc.id,
     ingress: [
       {
-        fromPort: 27017,
+        fromPort: 0,
         toPort: 27017,
         protocol: "tcp",
         securityGroups: [kubernetesSecGroup.id],

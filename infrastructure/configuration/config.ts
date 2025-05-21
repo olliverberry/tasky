@@ -1,7 +1,7 @@
 import * as pulumi from "@pulumi/pulumi";
 
 const defaultConfig = new pulumi.Config();
-const mongoDbFileName = "mongodb-linux-x86_64-ubuntu1804-6.0.23";
+const mongoDbFileName = "mongodb-linux-x86_64-ubuntu1804-5.0.30";
 const mongoshFileName = "mongosh-2.2.5-linux-x64";
 const mongoDbTgz = `${mongoDbFileName}.tgz`;
 const mongoshTgz = `${mongoshFileName}.tgz`;
