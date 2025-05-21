@@ -1,6 +1,12 @@
 #!/bin/bash
 
+# Inputs
+# 1. Stack name -- the name of the Pulumi stack to use
+# if stack name is not provided, list all available stacks.
+# you can set the stack name to "default" which will not use the specific stack but then the s3 bucket URL is required
+
 STACK_NAME=${1}
+S3_BUCKET_URL=${2}
 
 # Output formatting
 section() {
@@ -16,7 +22,7 @@ fail() {
 }
 
 usage() {
-    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name>$(tput sgr0)"
+    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name> <s3-bucket-url>$(tput sgr0)"
     exit 1
 }
 
@@ -28,12 +34,9 @@ if [ -z "$STACK_NAME" ]; then
 fi
 
 # Fetch S3 bucket URL from Pulumi stack
-section "Fetching s3Url from Pulumi stack: $STACK_NAME"
-S3_BUCKET_URL=$(pulumi stack -s "$STACK_NAME" output s3Url)
-
 if [ -z "$S3_BUCKET_URL" ]; then
-    fail "Could not retrieve s3Url from stack: $STACK_NAME"
-    exit 1
+    section "Fetching s3Url from Pulumi stack: $STACK_NAME"
+    S3_BUCKET_URL=$(pulumi stack -s "$STACK_NAME" output s3Url)
 fi
 
 success "Retrieved S3 bucket URL: $S3_BUCKET_URL"
