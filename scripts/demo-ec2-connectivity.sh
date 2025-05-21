@@ -1,9 +1,16 @@
 #!/bin/bash
 
+# Inputs
+# 1. Stack name -- the name of the Pulumi stack to use
+# 2. Mongo public DNS -- the public DNS of the MongoDB instance
+# if stack name is not provided, list all available stacks.
+# if mongo public DNS is not provided, get it from the stack. 
+# you can set the stack name to "default" which will not use the specific stack but then the mongo public DNS is required
 STACK_NAME=${1}
+MONGO_PUBLIC_DNS=${2}
 
 usage() {
-    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name>$(tput sgr0)"
+    echo -e "\n$(tput setaf 3)Usage: $0 <stack-name> <mongo-public-dns>$(tput sgr0)"
     exit 1
 }
 
@@ -25,12 +32,9 @@ if [ -z "${STACK_NAME}" ]; then
     usage
 fi
 
-section "Fetching MongoDB Public DNS from Pulumi stack: ${STACK_NAME}"
-MONGO_PUBLIC_DNS=$(pulumi stack -s "${STACK_NAME}" output mongoPublicDns)
-
-if [ -z "$MONGO_PUBLIC_DNS" ]; then
-    fail "Failed to retrieve mongoPublicDns from Pulumi stack."
-    exit 1
+if [ -z "${MONGO_PUBLIC_DNS}" ]; then
+    section "Fetching MongoDB Public DNS from Pulumi stack: ${STACK_NAME}"
+    MONGO_PUBLIC_DNS=$(pulumi stack -s "${STACK_NAME}" output mongoPublicDns)
 fi
 
 echo "$(tput setaf 2)Mongo Public DNS: $MONGO_PUBLIC_DNS$(tput sgr0)"

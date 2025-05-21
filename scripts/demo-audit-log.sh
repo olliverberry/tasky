@@ -1,8 +1,17 @@
 #!/bin/bash
 
+# Inputs
+# 1. Stack name -- the name of the Pulumi stack to use
+# 2. AWS profile -- the AWS profile to use
+# 3. AWS region -- the AWS region to use
+# 4. API server URL -- the URL of the API server to use. If not provided, the API server URL will be retrieved from the stack
+# if stack name is not provided, all available stacks will be listed.
+# you can set the stack name to "default" which will not use the specific stack but then the API server URL is required
+
 STACK_NAME=${1}
 AWS_PROFILE=${2}
 AWS_REGION=${3}
+API_SERVER_URL=${4}
 LOG_GROUP_NAME="/aws/eks/wiz-challenge-cluster/cluster"
 
 usage() {
@@ -24,8 +33,10 @@ if [ -z "$1" ] || [ -z "$2" ] || [ -z "$3" ]; then
     usage
 fi
 
-section "Getting API server URL from Pulumi stack: $STACK_NAME"
-API_SERVER_URL=$(pulumi stack -s "$STACK_NAME" output apiServerUrl)
+if [ -z "$API_SERVER_URL" ]; then
+    section "Getting API server URL from Pulumi stack: $STACK_NAME"
+    API_SERVER_URL=$(pulumi stack -s "$STACK_NAME" output apiServerUrl)
+fi
 
 if [ -z "$API_SERVER_URL" ]; then
     error "Failed to retrieve API server URL from Pulumi stack."
